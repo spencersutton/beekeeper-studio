@@ -13,7 +13,8 @@
           @closeAll="closeAll"
           @closeOther="closeOther"
           @duplicate="duplicate"
-          ></core-tab-header>
+          @setContextTab="setContextTab"
+        ></core-tab-header>
       </Draggable>
       <span class="actions">
         <a @click.prevent="createQuery(null)" class="btn-fab add-query"><i class=" material-icons">add_circle</i></a>
@@ -31,6 +32,24 @@
         <TableTable @setTabTitleScope="setTabTitleScope" v-if="tab.type === 'table'" :active="activeTab === tab" :tabId="tab.id" :connection="tab.connection" :initialFilter="tab.initialFilter" :table="tab.table"></TableTable>
       </div>
     </div>
+    <x-contextmenu>
+      <x-menu>
+        <x-menuitem @click.prevent="close(contextTab)">
+          <x-label>Close</x-label>
+          <x-shortcut value="Control+W"></x-shortcut>
+        </x-menuitem>
+        <x-menuitem @click.prevent="closeOther(contextTab)">
+          <x-label>Close Others</x-label>
+        </x-menuitem>
+        <x-menuitem @click.prevent="closeAll(contextTab)">
+          <x-label>Close All</x-label>
+        </x-menuitem>
+        <hr>
+        <x-menuitem @click.prevent="duplicate(contextTab)">
+          <x-label>Duplicate</x-label>
+        </x-menuitem>
+      </x-menu>
+    </x-contextmenu>
   </div>
 </template>
 
@@ -92,6 +111,9 @@
       }
     },
     methods: {
+      setContextTab(tab) {
+        this.contextTab = tab;
+      },
       async setActiveTab(tab) {
         await this.$store.dispatch('tabActive', tab)
       },
